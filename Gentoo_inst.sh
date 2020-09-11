@@ -146,3 +146,58 @@ mount -v --rbind /sys /mnt/gentoo/sys
 mount -v --rbind /dev /mnt/gentoo/dev 
 mount -v --make-rslave /mnt/gentoo/sys 
 mount -v --make-rslave /mnt/gentoo/dev
+
+touch gentooille.sh
+echo 'source /etc/profile
+export PS1="(chroot) $PS1" 
+emaint sync --auto 
+eselect profile set "default/linux/amd64/17.1" 
+emerge -a --verbose --oneshot portage
+echo "Europe/Paris" > /etc/timezone 
+emerge -a -v --config sys-libs/timezone-data 
+echo "fr_FR ISO-8859-1
+fr_FR.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+eselect locale set "C"
+env-update && source /etc/profile && export PS1="(chroot) $PS1"' >> gentooille.sh
+
+echo "sed -i 's/keymap=\"qwerty\"/keymap=\"azerty\"/'" >> gentooille.sh
+
+echo 'emerge -a --verbose --oneshot app-portage/cpuid2cpuflags' >> gentooille.sh
+
+echo "sed -i 's/CPU_FLAGS_X86=\"mmx mmxext sse sse2\"\/CPU_FLAGS_X86=\"aes avx avx2 fma3 mmx mmxext popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3\"/'" >> gentooille.sh
+
+echo 'mkdir -p -v /etc/portage/package.use
+touch /etc/portage/package.use/zzz_via_autounmask
+emerge -a --verbose dev-vcs/git
+touch /etc/portage/repos.conf/sakaki-tools.conf
+echo "[sakaki-tools]
+
+# Various utility ebuilds for Gentoo on EFI
+# Maintainer: sakaki (sakaki@deciban.com)
+
+location = /var/db/repos/sakaki-tools
+sync-type = git
+sync-uri = https://github.com/sakaki-/sakaki-tools.git
+priority = 50
+auto-sync = yes" >> /etc/portage/repos.conf/sakaki-tools.conf
+emaint sync --repo sakaki-tools
+mkdir -p -v /etc/portage/package.mask
+echo "*/*::sakaki-tools" >> /etc/portage/package.mask/sakaki-tools-repo
+mkdir -p -v /etc/portage/package.unmask
+touch /etc/portage/package.unmask/zzz_via_autounmask
+echo "app-portage/showem::sakaki-tools" >> /etc/portage/package.unmask/showem
+echo "sys-kernel/buildkernel::sakaki-tools" >> /etc/portage/package.unmask/buildkernel
+echo "app-portage/genup::sakaki-tools" >> /etc/portage/package.unmask/genup
+echo "app-crypt/staticgpg::sakaki-tools" >> /etc/portage/package.unmask/staticgpg
+echo "app-crypt/efitools::sakaki-tools" >> /etc/portage/package.unmask/efitools
+echo "sys-kernel/genkernel-next::sakaki-tools" >> /etc/portage/package.unmask/genkernel-next
+mkdir -p -v /etc/portage/package.accept_keywords
+touch /etc/portage/package.accept_keywords/zzz_via_autounmask
+echo "*/*::sakaki-tools ~amd64" >> /etc/portage/package.accept_keywords/sakaki-tools-repo
+echo -e "# all versions of efitools currently marked as ~ in Gentoo tree\napp-crypt/efitools ~amd64" >> /etc/portage/package.accept_keywords/efitools
+echo "~sys-apps/busybox-1.32.0 ~amd64" >> /etc/portage/package.accept_keywords/busybox
+emerge -a --verbose app-portage/showem ' >> gentooille.sh
+
+chmod 777 gentooille.sh
+chroot /mnt/gentoo ./gentouille.sh
