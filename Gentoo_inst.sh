@@ -60,7 +60,7 @@ cd ~
 touch /mnt/gentoo/root/.bashrc 
 echo 'export NUMCPUS=$(nproc)
 export NUMCPUSPLUSONE=$(( NUMCPUS + 1 ))
-export MAKEOPTS="-j${NUMCPUSPLUSONE} -l${NUMCPUS}
+export MAKEOPTS="-j${NUMCPUSPLUSONE} -l${NUMCPUS}"
 export EMERGE_DEFAULT_OPTS="--jobs=${NUMCPUSPLUSONE} --load-average=${NUMCPUS}"' >> /mnt/gentoo/root/.bashrc 
 
 cp -v /mnt/gentoo/etc/skel/.bash_profile /mnt/gentoo/root/ 
@@ -141,7 +141,6 @@ sync-openpgp-key-refresh-retry-delay-max = 60
 sync-openpgp-key-refresh-retry-delay-mult = 4' >> /mnt/gentoo/etc/portage/repos.conf/gentoo.conf 
 
 cp -v -L /etc/resolv.conf /mnt/gentoo/etc/
-cp -v /etc/wpa.conf /mnt/gentoo/etc/ 
 mount -v -t proc none /mnt/gentoo/proc
 mount -v --rbind /sys /mnt/gentoo/sys 
 mount -v --rbind /dev /mnt/gentoo/dev 
