@@ -3,9 +3,9 @@ partBOOT(){
     (
         echo mklabel gpt
         echo yes
-        mkpart primary fat32 0% 100%
-        set 1 BOOT on
-        quit
+        echo mkpart primary fat32 0% 100%
+        echo set 1 BOOT on
+        echo quit
     ) | parted --script -a optimal /dev/sdc
 }
 partBOOT
@@ -22,7 +22,6 @@ partSDA(){
         quit
     ) | parted --script -a optimal /dev/sda
 }
-dd if=/dev/urandom of=/dev/sda1 bs=1M status=progress && sync 
 
 #CryptSetup
 gpg --decrypt /tmp/efiboot/luks-key.gpg | cryptsetup --cipher serpent-xts-plain64 --key-size 512 --hash whirlpool --key-file - luksFormat /dev/sda1
