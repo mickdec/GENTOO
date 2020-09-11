@@ -111,9 +111,9 @@ FEATURES="split-elog buildpkg"
 
 # Settings for X11
 VIDEO_CARDS="intel i965"
-INPUT_DEVICES="libinput"' >> /mnt/gentoo/etc/portage/make.conf 
+INPUT_DEVICES="libinput"
 
-mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf 
+GENTOO_MIRRORS="ftp://ftp.free.fr/mirrors/ftp.gentoo.org/ http://ftp.free.fr/mirrors/ftp.gentoo.org/""' > /mnt/gentoo/etc/portage/make.conf 
 
 mkdir -p -v /mnt/gentoo/etc/portage/repos.conf 
 cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf 
@@ -138,7 +138,7 @@ sync-openpgp-key-refresh-retry-count = 40
 sync-openpgp-key-refresh-retry-overall-timeout = 1200
 sync-openpgp-key-refresh-retry-delay-exp-base = 2
 sync-openpgp-key-refresh-retry-delay-max = 60
-sync-openpgp-key-refresh-retry-delay-mult = 4' >> /mnt/gentoo/etc/portage/repos.conf/gentoo.conf 
+sync-openpgp-key-refresh-retry-delay-mult = 4' > /mnt/gentoo/etc/portage/repos.conf/gentoo.conf 
 
 cp -v -L /etc/resolv.conf /mnt/gentoo/etc/
 mount -v -t proc none /mnt/gentoo/proc
@@ -149,8 +149,11 @@ mount -v --make-rslave /mnt/gentoo/dev
 
 touch gentooille.sh
 echo 'source /etc/profile
-export PS1="(chroot) $PS1" 
-emaint sync --auto 
+export PS1="(chroot) $PS1"' >> gentooille.sh
+
+echo "sed -i 's/sync-type = rsync/sync-type = webrsync/' /mnt/gentoo/etc/portage/repos.conf/gentoo.conf"  >> gentooille.sh
+
+echo 'emaint sync --auto 
 eselect profile set "default/linux/amd64/17.1" 
 emerge -a --verbose --oneshot portage
 echo "Europe/Paris" > /etc/timezone 
@@ -161,11 +164,11 @@ locale-gen
 eselect locale set "C"
 env-update && source /etc/profile && export PS1="(chroot) $PS1"' >> gentooille.sh
 
-echo "sed -i 's/keymap=\"qwerty\"/keymap=\"azerty\"/'" >> gentooille.sh
+echo "sed -i 's/keymap=\"us\"/keymap=\"fr\"/' /etc/conf.d/keymaps" >> gentooille.sh
 
 echo 'emerge -a --verbose --oneshot app-portage/cpuid2cpuflags' >> gentooille.sh
 
-echo "sed -i 's/CPU_FLAGS_X86=\"mmx mmxext sse sse2\"\/CPU_FLAGS_X86=\"aes avx avx2 fma3 mmx mmxext popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3\"/'" >> gentooille.sh
+echo "sed -i 's/CPU_FLAGS_X86=\"mmx mmxext sse sse2\"\/CPU_FLAGS_X86=\"aes avx avx2 fma3 mmx mmxext popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3\"/' /etc/portage/make.conf" >> gentooille.sh
 
 echo 'mkdir -p -v /etc/portage/package.use
 touch /etc/portage/package.use/zzz_via_autounmask
@@ -200,4 +203,5 @@ echo "~sys-apps/busybox-1.32.0 ~amd64" >> /etc/portage/package.accept_keywords/b
 emerge -a --verbose app-portage/showem ' >> gentooille.sh
 
 chmod 777 gentooille.sh
+cp gentooille.sh /mnt/gentoo
 chroot /mnt/gentoo ./gentouille.sh
