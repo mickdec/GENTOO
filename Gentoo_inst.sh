@@ -151,28 +151,28 @@ touch gentooille.sh
 echo 'source /etc/profile
 export PS1="(chroot) $PS1"' >> gentooille.sh
 
-echo "sed -i 's/sync-type = rsync/sync-type = webrsync/' /mnt/gentoo/etc/portage/repos.conf/gentoo.conf"  >> gentooille.sh
+echo "sed -i 's/sync-type = rsync/sync-type = webrsync/g' /etc/portage/repos.conf/gentoo.conf"  >> gentooille.sh
 
 echo 'emaint sync --auto 
 eselect profile set "default/linux/amd64/17.1" 
-emerge -a --verbose --oneshot portage
+emerge --verbose --oneshot portage
 echo "Europe/Paris" > /etc/timezone 
-emerge -a -v --config sys-libs/timezone-data 
+emerge -v --config sys-libs/timezone-data 
 echo "fr_FR ISO-8859-1
 fr_FR.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
 eselect locale set "C"
 env-update && source /etc/profile && export PS1="(chroot) $PS1"' >> gentooille.sh
 
-echo "sed -i 's/keymap=\"us\"/keymap=\"fr\"/' /etc/conf.d/keymaps" >> gentooille.sh
+echo "sed -i 's/keymap=\"us\"/keymap=\"fr\"/g' /etc/conf.d/keymaps" >> gentooille.sh
 
-echo 'emerge -a --verbose --oneshot app-portage/cpuid2cpuflags' >> gentooille.sh
+echo 'emerge --verbose --oneshot app-portage/cpuid2cpuflags' >> gentooille.sh
 
-echo "sed -i 's/CPU_FLAGS_X86=\"mmx mmxext sse sse2\"\/CPU_FLAGS_X86=\"aes avx avx2 fma3 mmx mmxext popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3\"/' /etc/portage/make.conf" >> gentooille.sh
+echo "sed -i 's/CPU_FLAGS_X86=\"mmx mmxext sse sse2\"\/CPU_FLAGS_X86=\"aes avx avx2 fma3 mmx mmxext popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3\"/g' /etc/portage/make.conf" >> gentooille.sh
 
 echo 'mkdir -p -v /etc/portage/package.use
 touch /etc/portage/package.use/zzz_via_autounmask
-emerge -a --verbose dev-vcs/git
+emerge --verbose dev-vcs/git
 touch /etc/portage/repos.conf/sakaki-tools.conf
 echo "[sakaki-tools]
 
@@ -200,7 +200,7 @@ touch /etc/portage/package.accept_keywords/zzz_via_autounmask
 echo "*/*::sakaki-tools ~amd64" >> /etc/portage/package.accept_keywords/sakaki-tools-repo
 echo -e "# all versions of efitools currently marked as ~ in Gentoo tree\napp-crypt/efitools ~amd64" >> /etc/portage/package.accept_keywords/efitools
 echo "~sys-apps/busybox-1.32.0 ~amd64" >> /etc/portage/package.accept_keywords/busybox
-emerge -a --verbose app-portage/showem ' >> gentooille.sh
+emerge --verbose app-portage/showem ' >> gentooille.sh
 
 chmod 777 gentooille.sh
 cp gentooille.sh /mnt/gentoo
