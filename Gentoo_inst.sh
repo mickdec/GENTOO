@@ -49,6 +49,7 @@ PARTUUIDSDA=$(blkid | grep ^/dev/sda1 | awk -F "\"" '{print $2}')
 PARTUUIDSDC=$(blkid | grep ^/dev/sdc1 | awk -F "\"" '{print $2}')
 
 #Gentoo Stage3
+cd /mnt/gentoo 
 wget -c http://distfiles.gentoo.org/releases/amd64/autobuilds/20200909T214504Z/stage3-amd64-20200909T214504Z.tar.xz
 wget -c http://distfiles.gentoo.org/releases/amd64/autobuilds/20200909T214504Z/stage3-amd64-20200909T214504Z.tar.CONTENTS.gz
 wget -c http://distfiles.gentoo.org/releases/amd64/autobuilds/20200909T214504Z/stage3-amd64-20200909T214504Z.tar.xz.DIGESTS.asc
@@ -56,6 +57,7 @@ tar xvJpf stage3-amd64-*.tar.xz --xattrs-include='*.*' --numeric-owner
 rm -v -f stage3-amd64-* 
 cd ~
 
+touch /mnt/gentoo/root/.bashrc 
 echo 'export NUMCPUS=$(nproc)
 export NUMCPUSPLUSONE=$(( NUMCPUS + 1 ))
 export MAKEOPTS="-j${NUMCPUSPLUSONE} -l${NUMCPUS}
@@ -63,6 +65,7 @@ export EMERGE_DEFAULT_OPTS="--jobs=${NUMCPUSPLUSONE} --load-average=${NUMCPUS}"'
 
 cp -v /mnt/gentoo/etc/skel/.bash_profile /mnt/gentoo/root/ 
 
+touch /mnt/gentoo/etc/portage/make.conf 
 echo '# Build setup as of <add current date>
 
 # C, C++ and FORTRAN options for GCC.
